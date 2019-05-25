@@ -1,0 +1,13 @@
+{
+	"_id" : ObjectId("5cdb10725ac5ee0dc885292c"),
+	"USERS_id" : ObjectId("5cdb0dc45ac5ee0dc885292b"),
+	"Primary" : 1,
+	"Address" : {
+		"Line1" : "R-0004 Ave",
+		"Line2" : "",
+		"City" : "R-0004ville",
+		"State" : "PA",
+		"Zip" : "44444",
+		"Country" : "USA"
+	}
+}

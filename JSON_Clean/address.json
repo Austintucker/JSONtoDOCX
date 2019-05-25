@@ -1,0 +1,11 @@
+{
+	"Primary" : 1,
+	"Address" : {
+		"Line1" : "R-0004 Ave",
+		"Line2" : "",
+		"City" : "R-0004ville",
+		"State" : "PA",
+		"Zip" : "44444",
+		"Country" : "USA"
+	}
+}
