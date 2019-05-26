@@ -38,13 +38,20 @@ with open(resumeDoc, "r") as read_file:
 with open(userDoc, "r") as read_file:
     user = json.load(read_file)
 
+resumeOrder = [1,2,3,4,5]   # This list will determine the order in which sections are added to the resume
+                            # should eventually get this from the JSON
+
+font ='Calibri'
+
 #### *Temp* ####
+
 
 #### Define Functions ####
 
-def add_content(content, space_after, font_name='Arial', font_size=16, line_spacing=0, space_before=0,
+def add_content(content, space_after, font_name=font, font_size=16, line_spacing=0, space_before=0,
                 align='left', keep_together=True, keep_with_next=False, page_break_before=False,
-                widow_control=False, set_bold=False, set_italic=False, set_underline=False, set_all_caps=False, style_name="", firstline_indent=0.0, left_indent=0.0):
+                widow_control=False, set_bold=False, set_italic=False, set_underline=False, set_all_caps=False, 
+                style_name="", firstline_indent=0.0, left_indent=0.0):
     paragraph = document.add_paragraph(content)
     paragraph.style = document.styles.add_style(style_name, WD_STYLE_TYPE.PARAGRAPH)
     font = paragraph.style.font
@@ -66,79 +73,100 @@ def add_content(content, space_after, font_name='Arial', font_size=16, line_spac
     paragraph_format.first_line_indent = Inches(firstline_indent)
     paragraph_format.left_indent = Inches(left_indent)
 
-#!!! Sections below need to be transitioned to functions
-#!!! to allow for the easy reordering of the resumes
-#!!! 
-#!!! For some sections it maybe interesting to allow
-#!!! alignment customization, for example the header
-#!!! making the insertion of a photo possible
 
-# Insert Name
-add_content(f"{user['FName']} {user['LName']}",
-            align='Center', space_before=0, space_after=0, line_spacing=1, font_name='Arial', font_size=16, set_bold=True, set_all_caps=True,style_name ="HeaderBoldName", firstline_indent=0.0, left_indent=0.0)
+def generateHeader(): # Name, Address, Contact Info, *perhaps should add websites here*
+    # Insert Name
+    add_content(f"{user['FName']} {user['LName']}",
+                align='Center', space_before=0, space_after=0, line_spacing=1, font_size=16, set_bold=True, set_all_caps=True,style_name ="NameBold", firstline_indent=0.0, left_indent=0.0)
 
-# Insert Address
-if includeAddress:
-    if address['Address']['Country'] != 'USA':
-        country = address['Address']['Country']
-    else:
-        country = ""
+    # Insert Address
+    if includeAddress:
+        if address['Address']['Country'] != 'USA':
+            country = address['Address']['Country']
+        else:
+            country = ""
 
-    add_content(f"{address['Address']['Line1']} {address['Address']['Line2']}\n"
-                f"{address['Address']['City']}, {address['Address']['State']} {address['Address']['Zip']} {country}",
-                align='Center', space_before=0, space_after=0, line_spacing=1, font_name='Arial', font_size=12, set_bold=False, set_all_caps=False,style_name ="addressNotBold", firstline_indent=0.0, left_indent=0.0)
+        add_content(f"{address['Address']['Line1']} {address['Address']['Line2']}\n"
+                    f"{address['Address']['City']}, {address['Address']['State']} {address['Address']['Zip']} {country}",
+                    align='Center', space_before=0, space_after=0, line_spacing=1, font_size=12, set_bold=False, set_all_caps=False,style_name ="addressNotBold", firstline_indent=0.0, left_indent=0.0)
 
-# Insert Contact Info
-add_content(f"Phone: {user['Phone']}\n"
-            f"Email: {user['Email']}",
-            align='Center', space_before=0, space_after=0, line_spacing=1, font_name='Arial', font_size=12, set_bold=False, set_all_caps=False,style_name ="contactNotBold", firstline_indent=0.0, left_indent=0.0)
-
-# Insert Objective Statement
-add_content(f"\nObjective:",
-            align='Left', space_before=0, space_after=0, line_spacing=1, font_name='Arial', font_size=14, set_bold=True, set_all_caps=False,style_name ="ObjectiveBold", firstline_indent=0.0, left_indent=0.0)
-add_content(f"{resume['Objective Statement']}\n",
-            align='Left', space_before=0, space_after=0, line_spacing=1, font_name='Arial', font_size=12, set_bold=False, set_all_caps=False,style_name ="ObjectiveStatement", firstline_indent=0.0, left_indent=0.5)
-
-# Insert Education
-add_content(f"Education:",
-            align='Left', space_before=0, space_after=0, line_spacing=1, font_name='Arial', font_size=14, set_bold=True, set_all_caps=False,style_name ="EducationBold", firstline_indent=0.0, left_indent=0.0)
-
-j = 0
-for i in resume['School']:
-    add_content(f"\t{i['Name']} - {i['City']}, {i['State']}, {i['Country']}\n"
-                f"\tMajor: {i['Major']}\t\tGraduation: {i['Graduation']}\n"
-                f"\tMinor: {i['Minor']}\n"
-                f"\tGPA: {i['Gpa']}\n",
-                align='Left', space_before=0, space_after=0, line_spacing=1, font_name='Arial', font_size=12, set_bold=False, set_all_caps=False,style_name =f"ObjectiveStatement{j}", firstline_indent=0.0, left_indent=0.0)
-    j += 1
-
-# Insert Relevant Coursework
-add_content(f"Relevant Coursework:",
-            align='Left', space_before=0, space_after=0, line_spacing=1, font_name='Arial', font_size=14, set_bold=True, set_all_caps=False,style_name ="CourseworkBold", firstline_indent=0.0, left_indent=0.0)
-
-j = 0
-for i in resume['RelevantCourse']:
-    add_content(f"\t+ {i['Name']}",
-                align='Left', space_before=0, space_after=0, line_spacing=1, font_name='Arial', font_size=12, set_bold=False, set_all_caps=False,style_name =f"CourseName{j}", firstline_indent=0.0, left_indent=0.0)
-    add_content(f"{i['Description']}",
-                align='Left', space_before=0, space_after=0, line_spacing=1, font_name='Arial', font_size=10, set_bold=False, set_all_caps=False,style_name =f"CourseDes{j}", firstline_indent=0.0, left_indent=1.0)
-    j += 1
-
-add_content(f"",
-            align='Left', space_before=0, space_after=0, line_spacing=1, font_name='Arial', font_size=14, set_bold=True, set_all_caps=False,style_name ="CourseworkBlankLine", firstline_indent=0.0, left_indent=0.0)
+    # Insert Contact Info
+    add_content(f"Phone: {user['Phone']}\n"
+                f"Email: {user['Email']}",
+                align='Center', space_before=0, space_after=0, line_spacing=1, font_size=12, set_bold=False, set_all_caps=False,style_name ="contactNotBold", firstline_indent=0.0, left_indent=0.0)
 
 
-# Insert Skills - This section is just bad and needs work, might be worth looking at tables
-add_content(f"Skills:",
-            align='Left', space_before=0, space_after=0, line_spacing=1, font_name='Arial', font_size=14, set_bold=True, set_all_caps=False,style_name ="SkillsBold", firstline_indent=0.0, left_indent=0.0)
+def generateObjective():
+    # Insert Objective Statement
+    add_content(f"\nObjective:",
+                align='Left', space_before=0, space_after=0, line_spacing=1, font_size=14, set_bold=True, set_all_caps=False,style_name ="ObjectiveBold", firstline_indent=0.0, left_indent=0.0)
+    add_content(f"{resume['Objective Statement']}\n",
+                align='Left', space_before=0, space_after=0, line_spacing=1, font_size=12, set_bold=False, set_all_caps=False,style_name ="ObjectiveStatement", firstline_indent=0.0, left_indent=0.5)
 
-for i in resume['Skill']:
-    add_content(f"\t{i}",
-                align='Left', space_before=0, space_after=0, line_spacing=1, font_name='Arial', font_size=12, set_bold=False, set_all_caps=False,style_name =f"{i}", firstline_indent=0.0, left_indent=0.0)
-    for j in resume['Skill'][i]:
-        for k in resume['Skill'][i][j]:
-                add_content(f"\t\t{k} - {resume['Skill'][i][j][k]}",
-                            align='Left', space_before=0, space_after=0, line_spacing=1, font_name='Arial', font_size=10, set_bold=False, set_all_caps=False,style_name =f"{k}", firstline_indent=0.0, left_indent=0.0)
+
+def generateEducation():
+    # Insert Education
+    add_content(f"Education:",
+                align='Left', space_before=0, space_after=0, line_spacing=1, font_size=14, set_bold=True, set_all_caps=False,style_name ="EducationBold", firstline_indent=0.0, left_indent=0.0)
+
+    j = 0
+    for i in resume['School']:
+        add_content(f"\t{i['Name']} - {i['City']}, {i['State']}, {i['Country']}\n"
+                    f"\tMajor: {i['Major']}\t\tGraduation: {i['Graduation']}\n"
+                    f"\tMinor: {i['Minor']}\n"
+                    f"\tGPA: {i['Gpa']}\n",
+                    align='Left', space_before=0, space_after=0, line_spacing=1, font_size=12, set_bold=False, set_all_caps=False,style_name =f"ObjectiveStatement{j}", firstline_indent=0.0, left_indent=0.0)
+        j += 1
+
+
+def generateCoursework():
+    # Insert Relevant Coursework
+    add_content(f"Relevant Coursework:",
+                align='Left', space_before=0, space_after=0, line_spacing=1, font_size=14, set_bold=True, set_all_caps=False,style_name ="CourseworkBold", firstline_indent=0.0, left_indent=0.0)
+
+    j = 0
+    for i in resume['RelevantCourse']:
+        add_content(f"\t+ {i['Name']}",
+                    align='Left', space_before=0, space_after=0, line_spacing=1, font_size=12, set_bold=False, set_all_caps=False,style_name =f"CourseName{j}", firstline_indent=0.0, left_indent=0.0)
+        add_content(f"{i['Description']}",
+                    align='Left', space_before=0, space_after=0, line_spacing=1, font_size=10, set_bold=False, set_all_caps=False,style_name =f"CourseDes{j}", firstline_indent=0.0, left_indent=1.0)
+        j += 1
+
+    add_content(f"",
+                align='Left', space_before=0, space_after=0, line_spacing=1, font_size=14, set_bold=True, set_all_caps=False,style_name ="CourseworkBlankLine", firstline_indent=0.0, left_indent=0.0)
+
+
+def generateSkills(): # Should experience level be included or is that more for analysis
+    # Insert Skills - This section is just bad and needs work, might be worth looking at tables
+    add_content(f"Skills:",
+                align='Left', space_before=0, space_after=0, line_spacing=1, font_size=14, set_bold=True, set_all_caps=False,style_name ="SkillsBold", firstline_indent=0.0, left_indent=0.0)
+
+    for i in resume['Skill']:
+        add_content(f"\t{i}",
+                    align='Left', space_before=0, space_after=0, line_spacing=1, font_size=12, set_bold=False, set_all_caps=False,style_name =f"{i}", firstline_indent=0.0, left_indent=0.0)
+        for j in resume['Skill'][i]:
+            for k in resume['Skill'][i][j]:
+                    add_content(f"\t\t{k} - {resume['Skill'][i][j][k]}",
+                                align='Left', space_before=0, space_after=0, line_spacing=1, font_size=10, set_bold=False, set_all_caps=False,style_name =f"{k}", firstline_indent=0.0, left_indent=0.0)
+
+
+def generateExperience():
+    return
+
+
+def generateActivities():
+    return
+
+functionDic = { 1: generateHeader,
+                2: generateObjective,
+                3: generateEducation,
+                4: generateCoursework,
+                5: generateSkills}
+
+print(f"Order List: {resumeOrder}")
+for x in resumeOrder:
+    print(f"X in for loop {x}")
+    functionDic[x]()
 
 
 # Save file to local directory
