@@ -12,8 +12,6 @@ alignment_dict = {'justify': WD_PARAGRAPH_ALIGNMENT.JUSTIFY,
                   'right': WD_PARAGRAPH_ALIGNMENT.RIGHT,
                   'left': WD_PARAGRAPH_ALIGNMENT.LEFT}
 
-includeAddress = True # This param will be given in http trigger
-
 document = Document()
 
 sections = document.sections
@@ -40,6 +38,8 @@ with open(userDoc, "r") as read_file:
 
 resumeOrder = [1,2,3,4,5]   # This list will determine the order in which sections are added to the resume
                             # should eventually get this from the JSON
+
+includeAddress = True # This param will be given in http trigger
 
 font ='Calibri'
 
