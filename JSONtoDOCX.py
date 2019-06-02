@@ -25,7 +25,7 @@ def resumeDocxConstructor():
 
     ####  Temp  #### - Eventually this information will be passed by HTTP trigger
 
-    resumeDirectory = f"C:\VScodeProjects\AzureFunctionTesting\HttpExample\JSON_Clean"
+    resumeDirectory = f"{os.getcwd()}/JSON"
 
     addressDoc  = f"{resumeDirectory}/address.json"
     resumeDoc   = f"{resumeDirectory}/resume.json"
