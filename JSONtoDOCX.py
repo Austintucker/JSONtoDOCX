@@ -171,7 +171,7 @@ def resumeDocxConstructor():
 
 
     # Save file to a /local directory
-    os.chdir('C:/VScodeProjects/JSONtoDOCX/resumeDoc')
+    os.chdir(f"{os.getcwd()}/resumeDoc")
     document.save(f"{user['LName']}.docx")
 
 
