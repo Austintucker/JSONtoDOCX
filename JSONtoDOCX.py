@@ -158,7 +158,19 @@ def resumeDocxConstructor():
 
 
     def generateActivities():
-        return
+        #Insert Activties
+        add_content(f"Activties:",
+                    align='Left', space_before=0, space_after=0, line_spacing=1, font_size=14, set_bold=True, set_all_caps=False,style_name ="ActivtiesBold", firstline_indent=0.0, left_indent=0.0)
+
+        j = 0
+        for i in resume['Activties']:
+            add_content(f"\t+ {i['Name']}",
+                        align='Left', space_before=0, space_after=0, line_spacing=1, font_size=12, set_bold=False,
+                        set_all_caps=False,style_name =f"ActivitiesName{j}", firstline_indent=0.0, left_indent=0.0)
+            add_content(f"{i['Description']}",
+                        align='Left', space_before=0, space_after=0, line_spacing=1, font_size=10, set_bold=False,
+                        set_all_caps=False,style_name =f"ActivityDes{j}", firstline_indent=0.0, left_indent=1.0)
+            j += 1
 
     functionDic = { 1: generateHeader,
                     2: generateObjective,
